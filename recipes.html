@@ -9,7 +9,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 5%;
-            font-size: 16px;
+            font-size: 18px; /* Increased font size */
             line-height: 1.6;
             color: #333;
         }
@@ -17,7 +17,7 @@
         #search {
             width: 100%;
             padding: 12px;
-            font-size: 16px;
+            font-size: 18px; /* Increased font size */
             margin-bottom: 20px;
             box-sizing: border-box;
         }
@@ -28,16 +28,21 @@
             padding: 20px;
             margin-bottom: 25px;
             background-color: #fff;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .recipe h2 {
             margin-top: 0;
-            font-size: 24px;
+            font-size: 22px; /* Slightly larger heading */
         }
 
         .recipe p {
             margin: 10px 0;
-            font-size: 16px;
+            font-size: 18px; /* Match body font size */
+            word-wrap: break-word;       /* Ensure lines break within words */
+            overflow-wrap: break-word;
         }
 
         #language-buttons {
@@ -47,7 +52,9 @@
         #language-buttons button {
             margin-right: 10px;
             padding: 12px 20px;
-            font-size: 16px;
+            font-size: 18px; /* Increased font size */
+            min-width: 48px;
+            min-height: 48px;
             border: none;
             border-radius: 5px;
             background-color: #eee;
@@ -64,27 +71,25 @@
             color: white;
         }
 
+        /* Responsive adjustments */
         @media only screen and (max-width: 600px) {
             body {
                 margin: 2%;
-                font-size: 14px;
+                font-size: 20px; /* Increase font size on small screens */
             }
             #search {
+                font-size: 20px;
                 padding: 10px;
-                font-size: 14px;
-            }
-            .recipe {
-                padding: 15px;
             }
             .recipe h2 {
-                font-size: 20px;
+                font-size: 24px; /* Larger heading on mobile */
             }
             .recipe p {
-                font-size: 14px;
+                font-size: 20px;
             }
             #language-buttons button {
+                font-size: 20px;
                 padding: 10px 15px;
-                font-size: 14px;
             }
         }
     </style>
