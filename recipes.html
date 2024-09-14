@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cocktail Recipes</title>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #search {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .recipe {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .recipe h2 {
+            margin-top: 0;
+        }
+        .recipe p {
+            margin: 5px 0;
+        }
+        #language-buttons {
+            margin-bottom: 15px;
+        }
+        #language-buttons button {
+            margin-right: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        /* Highlight the selected language */
+        #language-buttons button.selected {
+            background-color: #007BFF;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="language-buttons">
+        <button id="lang-de">Deutsch</button>
+        <button id="lang-en">English</button>
+    </div>
+    <input type="text" id="search" placeholder="Search for a cocktail recipe...">
+    <div id="recipes"></div>
+
+    <script>
+        // JSON data with multilingual support
+        var recipes = [
+            {
+                "Mix Name": {
+                    "de": "Sour Mix (Winter Edition)",
+                    "en": "Sour Mix (Winter Edition)"
+                },
+                "Ingredients": {
+                    "de": "Zitrone Sherbet, Orange Sherbet, Zimt Sirup, Orange-Zimt Wasser, Maracuja Kordial",
+                    "en": "Lemon Sherbet, Orange Sherbet, cinnamon syrup, orange-cinnamon water, Maracuja Kordial"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "769cl, 769cl, 769cl, 1153cl, 1538cl",
+                "10l": "1538cl, 1538cl, 1538cl, 2306cl, 3076cl",
+                "15l": "2307cl, 2307cl, 2307cl, 3459cl, 4614cl"
+            },
+            {
+                "Mix Name": {
+                    "de": "Sour Mix (Sommer Edition)",
+                    "en": "Sour Mix (Sommer Edition)"
+                },
+                "Ingredients": {
+                    "de": "Zitrone Sherbet, Orange Sherbet, Zitrone-Grass, Wasser, Maracuja Kordial",
+                    "en": "Lemon Sherbet, Orange Sherbet, Lemon Grass, Water, Maracuja Kordial"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "909cl, 909cl, 1363cl, 1818cl, 1538cl",
+                "10l": "1818cl, 1818cl, 2726cl, 3636cl, 3076cl",
+                "15l": "2727cl, 2727cl, 4089cl, 5454cl, 4614cl"
+            },
+            {
+                "Mix Name": {
+                    "de": "Hugo-mix",
+                    "en": "Hugo mix"
+                },
+                "Ingredients": {
+                    "de": "2,5cl Lime Sherbet, 2,5cl Holunder Sirup, 1cl Minzsirup",
+                    "en": "2.5Cl Lime Sherbet, 2.5CL elderberry syrup, 1CL mint syrup"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "2083cl, 2083cl, 833cl",
+                "10l": "4166cl, 4166cl, 1666cl",
+                "15l": "6249cl, 6249cl, 2499cl"
+            },
+            {
+                "Mix Name": {
+                    "de": "Limes Sherbet",
+                    "en": "Limes Sherbet"
+                },
+                "Ingredients": {
+                    "de": "Limetten Zeste, Zucker, Saft",
+                    "en": "Lime zest, sugar, juice"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "250g, 5000g",
+                "10l": "500g, 10000g",
+                "15l": "750g, 15000g"
+            },
+            {
+                "Mix Name": {
+                    "de": "Orangensherbet",
+                    "en": "Orange -herbet"
+                },
+                "Ingredients": {
+                    "de": "Orangen Zeste, Zucker, Saft",
+                    "en": "Orange zest, sugar, juice"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "250g, 5000g",
+                "10l": "500g, 10000g",
+                "15l": "750g, 15000g"
+            },
+            {
+                "Mix Name": {
+                    "de": "Zitronensherbet",
+                    "en": "Citric"
+                },
+                "Ingredients": {
+                    "de": "Zitronen Zeste, Zucker, Saft",
+                    "en": "Lemon zest, sugar, juice"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "250g, 5000g",
+                "10l": "500g, 10000g",
+                "15l": "750g, 15000g"
+            },
+            {
+                "Mix Name": {
+                    "de": "Acid",
+                    "en": "acid"
+                },
+                "Ingredients": {
+                    "de": "Zitronen Zeste, Limette Zeste, Zitronens\u00e4ure, Weins\u00e4ure, Apfels\u00e4ure, Wasser",
+                    "en": "Lemon zest, lime zest, citric acid, vita acid, apple acid, water"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "150g, 100g, 100g, 25g, 50g, 5l",
+                "10l": "300g, 200g, 200g, 50g, 100g, 10l",
+                "15l": "450g, 300g, 300g, 75g, 150g, 15l"
+            },
+            {
+                "Mix Name": {
+                    "de": "Maracuja Cordial",
+                    "en": "Maracuja Cordial"
+                },
+                "Ingredients": {
+                    "de": "Maracuja Saft, Maracuja P\u00fcree, Zucker, Zitronens\u00e4ure",
+                    "en": "Maracuja juice, Maracuja puree, sugar, citric acid"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "6 liter, 4 liter, 10 kilo, 100g",
+                "10l": "6 liter, 4 liter, 10 kilo, 100g",
+                "15l": "6 liter, 4 liter, 10 kilo, 100g"
+            },
+            {
+                "Mix Name": {
+                    "de": "Himbeere Cordial",
+                    "en": "Raspberry cordial"
+                },
+                "Ingredients": {
+                    "de": "TK Himbeere, Wasser, Zucker, Zitronens\u00e4ure",
+                    "en": "TK raspberry, water, sugar, citric acid"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "5 kilo, 5 liter, 5 kilo, 150g",
+                "10l": "5 kilo, 5 liter, 5 kilo, 150g",
+                "15l": "5 kilo, 5 liter, 5 kilo, 150g"
+            },
+            {
+                "Mix Name": {
+                    "de": "Zucker Sirup",
+                    "en": "Sugar syrup"
+                },
+                "Ingredients": {
+                    "de": "Zucker, Wasser",
+                    "en": "Sugar, water"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "10kg, 5l",
+                "10l": "10kg, 5l",
+                "15l": "Not specified"
+            },
+            {
+                "Mix Name": {
+                    "de": "Santino",
+                    "en": "Santino"
+                },
+                "Ingredients": {
+                    "de": "4cl Blutorangensaft, 2cl Zitronensaft, 1 Fl. Crodino, Ginger Beer fill",
+                    "en": "4Cl blood orange juice, 2Cl lemon juice, 1 fl.Crodino, Ginger Beer Fill"
+                },
+                "Instructions": {
+                    "de": "Zutaten in den Becher, leicht umr\u00fchren",
+                    "en": "Ingredients into the cup, stir slightly"
+                },
+                "Glass": {
+                    "de": "Becher",
+                    "en": "Mug"
+                },
+                "Garnish": {
+                    "de": "Kumquats, Rosmarin/Thymian",
+                    "en": "Kumquats, rosemary/thyme"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Virgin Mojito",
+                    "en": "Virgin Mojito"
+                },
+                "Ingredients": {
+                    "de": "6 Stk. Limetten, 2 BL Wei\u00dfer Rohrzucker, 8 Bl. Minze, 2,5cl Lime Sherbet, Crushed Eis, Bitter Lemon fill",
+                    "en": "6 pcs. Limettes, 2 BL white cane sugar, 8 sheets of mint, 2.5cl Lime Sherbet, Crushed Eis, Bitter Lemon Fill"
+                },
+                "Instructions": {
+                    "de": "Alle Zutaten ins Glas geben, Crushed Eis auff\u00fcllen und gut umr\u00fchren, nochmal Crushed Eis rein und mit Soda auff\u00fcllen",
+                    "en": "Put all the ingredients in the glass, fill in the crushed ice and stir well, again crushed ice cream and fill with soda"
+                },
+                "Glass": {
+                    "de": "Longdrink",
+                    "en": "Long drink"
+                },
+                "Garnish": {
+                    "de": "Limette und Minze",
+                    "en": "Lime and mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Vibrante/Floreale Sour",
+                    "en": "Vibrante/floreal sour"
+                },
+                "Ingredients": {
+                    "de": "5,5cl Sour mix, 5cl Floreale/Vibrante, 2cl Acid",
+                    "en": "5.5CL SOUR MIX, 5CL floreal/vibrante, 2Cl acid"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen, Prebatch 5,5cl + 5cl Vibrante und 2cl Acid mit Crushed Eis in den Tin und mixen",
+                    "en": "Cool glass, Prebatch 5.5Cl + 5Cl Vibrante and 2Cl Acid with crushed ice in the tin and mix"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Kumquats, Rosmarin/Thymian",
+                    "en": "Kumquats, rosemary/thyme"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Ipanema",
+                    "en": "Ipanema"
+                },
+                "Ingredients": {
+                    "de": "4 1/2 Limettenscheiben, 2,5cl Lime Sherbet, 1,5cl Acid MIX, 3cl Maracuja Cordial, Ginger Ale fill",
+                    "en": "4 1/2 lime slices, 2.5cl Lime Sherbet, 1.5Cl acid mix, 3Cl Maracuja Cordial, Ginger Ale Fill"
+                },
+                "Instructions": {
+                    "de": "Alle Zutaten ins Glas geben, crushed Eis f\u00fcllen, Ginger Ale und gut umr\u00fchren",
+                    "en": "Put all the ingredients in the glass, fill the crushed ice, stir ginger and stir well"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Trockene Grapefruit, Minze",
+                    "en": "Dry grapefruit, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Aperol Spritz",
+                    "en": "Aperol spray"
+                },
+                "Ingredients": {
+                    "de": "6cl Aperol, 6-8 Eisw\u00fcrfeln, 2/3 Prosecco, 1/3 Soda",
+                    "en": "6cl Aperol, 6-8 ice cubes, 2/3 Prosecco, 1/3 soda"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Orange",
+                    "en": "Panher orange"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Aperol Lemon (Wochen Spritz)",
+                    "en": "Aperol Lemon (weeks spray)"
+                },
+                "Ingredients": {
+                    "de": "6cl Aperol, 6-8 Eisw\u00fcrfeln, Bitterlemon",
+                    "en": "6cl Aperol, 6-8 ice cubes, bitterlemon"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Trockene Limette, Minze",
+                    "en": "Disc dry lime, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Aperol Hibiscus (Wochen Spritz)",
+                    "en": "Aperol Hibiscus (weeks spray)"
+                },
+                "Ingredients": {
+                    "de": "6cl Aperol, 6-8 Eisw\u00fcrfeln, Hibiscus Tonic",
+                    "en": "6cl Aperol, 6-8 ice cubes, Hibiscus tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Trockene Limette, Minze",
+                    "en": "Disc dry lime, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Hugo",
+                    "en": "Hugo"
+                },
+                "Ingredients": {
+                    "de": "6cl Hugomix, 6-8 Eisw\u00fcrfeln, 4 Stk. Limettenscheibe, 6-8 Bl\u00e4tter Minze, 2/3 Prosecco, 1/3 Soda",
+                    "en": "6cl Hugomix, 6-8 ice cubes, 4 pieces of lime slice, 6-8 leaves mint, 2/3 Prosecco, 1/3 soda"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Trockene Limette, Minze",
+                    "en": "Disc dry lime, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Hugo-lein (Alkoholfrei)",
+                    "en": "Hugo-lin (non-alcoholic)"
+                },
+                "Ingredients": {
+                    "de": "6cl Hugomix, 6-8 Eisw\u00fcrfeln, 4 Stk. Limettenscheibe, 6-8 Bl\u00e4tter Minze, Tonic",
+                    "en": "6cl Hugomix, 6-8 ice cubes, 4 pieces of lime slice, 6-8 leaves mint, tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Trockene Limette, Minze",
+                    "en": "Disc dry lime, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Lillet Berry",
+                    "en": "Lillet Berry"
+                },
+                "Ingredients": {
+                    "de": "6cl Lillet Blanc, 6-8 Eisw\u00fcrfeln, Beeren, Wild Berry",
+                    "en": "6cl Lillet Blanc, 6-8 ice cubes, berries, wild Berry"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Minze",
+                    "en": "mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Milano Spritz (Cl\u00e1sico)",
+                    "en": "Milano Spritz (Cl\u00e1sico)"
+                },
+                "Ingredients": {
+                    "de": "5cl Campari, 6-8 Eisw\u00fcrfeln, 2/3 Prosecco, 1/3 Soda",
+                    "en": "5Cl Campari, 6-8 ice cubes, 2/3 Prosecco, 1/3 soda"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Rosmarin, Trockene Orange",
+                    "en": "Rosemary, dry orange"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Campari Spritz",
+                    "en": "Campari Spritz"
+                },
+                "Ingredients": {
+                    "de": "4cl Campari, 2cl Maracuja Cordial, Bitter Lemon",
+                    "en": "4Cl Campari, 2Cl Maracuja Cordial, Bitter Lemon"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Trockene Limette, Minze",
+                    "en": "Disc dry lime, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Limoncello Spritz",
+                    "en": "Lemoncello spray"
+                },
+                "Ingredients": {
+                    "de": "4cl Limoncello, 2cl Zitronen Saft, 6-8 Eisw\u00fcrfeln, Tonic",
+                    "en": "4Cl lemoncello, 2Cl lemon juice, 6-8 ice cubes, tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Trockene Zitronen, Minze",
+                    "en": "Disc dry lemons, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Limoncello-Erdbeer Spritz (Wochen Spritz)",
+                    "en": "Lemoncello-Erdbeer Spritz (weeks spray)"
+                },
+                "Ingredients": {
+                    "de": "4cl Limoncello, 2cl Zitronen Saft, 2cl Erdbeer-P\u00fcree, 6-8 Eisw\u00fcrfeln, Tonic",
+                    "en": "4Cl lemoncello, 2Cl lemon juice, 2CL strawberry puree, 6-8 ice cubes, tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Scheibe Trockene Zitronen, Minze, Erdbeeren",
+                    "en": "Disc dry lemons, mint, strawberries"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Lavabelle Spritz",
+                    "en": "Lavabelle spray"
+                },
+                "Ingredients": {
+                    "de": "4cl Lavabelle Lik\u00f6r, 2cl Gin, 6-8 Eisw\u00fcrfeln, Botanik Tonic",
+                    "en": "4Cl lavabelle liqueur, 2Cl gin, 6-8 ice cubes, botany tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Minze/Trockene Lavendel, Trockene Zitrone",
+                    "en": "Mint/dry lavender, dry lemon"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Pink Spritz",
+                    "en": "Pink spray"
+                },
+                "Ingredients": {
+                    "de": "6cl Aperol, 6-8 Eisw\u00fcrfeln, Pink Grapefruit Tonic",
+                    "en": "6cl Aperol, 6-8 ice cubes, Pink Grapefruit Tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Trockene Grapefruit, Minze",
+                    "en": "Dry grapefruit, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Peach Spritz",
+                    "en": "Peach spray"
+                },
+                "Ingredients": {
+                    "de": "4cl Rose Vermouth, Pfirsich, Peach Tonic",
+                    "en": "4Cl rose Vermouth, Peach, Peach Tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Not Specified",
+                    "en": "Not specified"
+                },
+                "Garnish": {
+                    "de": "Not Specified",
+                    "en": "Not specified"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Chokotini",
+                    "en": "Chokotini"
+                },
+                "Ingredients": {
+                    "de": "3cl Vodka, 2cl Ristretto Liquer, 2cl Choko Liquer, 1,5cl Zimtsirup, 2cl Espresso, Zusammen 10,5cl",
+                    "en": "3CL Vodka, 2Cl Ristretto Liquer, 2Cl Choko Liquer, 1.5Cl cinnamon syrup, 2Cl espresso, together 10.5Cl"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "285cl, 190cl, 190cl, 142,5cl, 190cl, Zusammen 10,5cl",
+                "3L": "855cl, 570cl, 570cl, 427,5cl, 570cl, Zusammen 10,5cl",
+                "5l": "1425cl, 950cl, 950cl, 712,5cl, 950cl, Zusammen 10,5cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Long Island Iced Tea",
+                    "en": "Long Island Iced Tea"
+                },
+                "Ingredients": {
+                    "de": "1,5cl Vodka, 1,5cl Tequila, 1,5cl Rum, 1,5cl Gin, 1,5cl Cointreau, 1,5cl Lime Sherbet, 2cl Acid, Zusammen 9cl, Mit Cola auff\u00fcllen",
+                    "en": "1.5Cl vodka, 1.5cl tequila, 1.5cl rum, 1.5cl gin, 1.5cl CoinTreau, 1.5cl Lime Sherbet, 2Cl acid, together with cola"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "165cl, 165cl, 165cl, 165cl, 165cl, 165cl, Zusammen 9cl",
+                "3L": "495cl, 495cl, 495cl, 495cl, 495cl, 495cl, Zusammen 9cl",
+                "5l": "825cl, 825cl, 825cl, 825cl, 825cl, 825cl, Zusammen 9cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Pina Kolada",
+                    "en": "Pina Kolada"
+                },
+                "Ingredients": {
+                    "de": "1cl Orange Sherbet, 2cl Kokos P\u00fcree, 4cl Ananas P\u00fcree, 4cl Dunkel Rum, 0,75cl Vodka, Zusammen 12cl, 1cl Acid",
+                    "en": "1Cl Orange Sherbet, 2Cl coconut Puree, 4Cl Ananas Puree, 4Cl dark rum, 0.75cl Vodka, together 12Cl, 1Cl acid"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "90cl, 170cl, 340cl, 340cl, 60cl, Zusammen 12cl",
+                "3L": "300cl, 500cl, 1000cl, 1000cl, 185cl, Zusammen 12cl",
+                "5l": "450cl, 850cl, 1700cl, 1700cl, 300cl, Zusammen 12cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Riwa Colada",
+                    "en": "Riwa Colada"
+                },
+                "Ingredients": {
+                    "de": "1cl Orange Sherbet, 2cl Kokos P\u00fcree, 4cl Ananas P\u00fcree, 4cl Dunkel Rum, 0,75cl Caffe Vodka, Zusammen 12cl, 1cl Acid",
+                    "en": "1cl Orange Sherbet, 2Cl coconut Puree, 4Cl Ananas Puree, 4Cl dark rum, 0.75cl Caffe Vodka, together 12Cl, 1Cl acid"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "90cl, 170cl, 340cl, 340cl, 60cl, Zusammen 12cl",
+                "3L": "300cl, 500cl, 1000cl, 1000cl, 185cl, Zusammen 12cl",
+                "5l": "450cl, 850cl, 1700cl, 1700cl, 300cl, Zusammen 12cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Gin Basil Smash",
+                    "en": "Gin Basil Smash"
+                },
+                "Ingredients": {
+                    "de": "1cl Zitrone Sherbet, 1cl Orange Sherbet, 1cl Kardamom Vodka, 0,5cl Ingwer Vodka, 4cl Gin, 0,1cl Liebst\u00f6ckel Vodka, Zusammen 7,5cl, 2cl Acid",
+                    "en": "1Cl Zitron Sherbet, 1Cl Orange Sherbet, 1Cl Kardamom Vodka, 0.5Cl Ingwer Vodka, 4Cl Gin, 0.1Cl Liebst\u00f6ckel Vodka, Together 7.5Cl, 2CL ACID"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "131cl, 131cl, 131cl, 65,5cl, 524cl, 13,1cl, Zusammen 7,5cl",
+                "3L": "394cl, 394cl, 394cl, 197cl, 1576cl, 39,4cl, Zusammen 7,5cl",
+                "5l": "657cl, 657cl, 657cl, 328,5cl, 2628cl, 65,7cl, Zusammen 7,5cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Margarita",
+                    "en": "Margarita"
+                },
+                "Ingredients": {
+                    "de": "4cl Tequila, 2cl Cointreau, 1cl Lime Sherbet, Zusammen 7,5cl, 1,5cl Acid",
+                    "en": "4Cl Tequila, 2CL COINTREAU, 1CL Lime Sherbet, Together 7.5Cl, 1.5Cl acid"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "555cl, 285cl, 155cl, Zusammen 7,5cl",
+                "3L": "1665cl, 855cl, 465cl, Zusammen 7,5cl",
+                "5l": "2775cl, 1425cl, 775cl, Zusammen 7,5cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Tristan",
+                    "en": "Tristan"
+                },
+                "Ingredients": {
+                    "de": "3cl Birnenbrand, 2,5cl Campari, 2,5cl Roter Wermut, 2,5cl Grapefruitwasser, Zusammen 11cl",
+                    "en": "3Cl pear brandy, 2.5Cl Campari, 2.5cl red wormwood, 2.5CL grapefruit water, 11Cl together"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "285cl, 237,5cl, 237,5cl, 237,5cl, Zusammen 11cl",
+                "3L": "855cl, 712,5cl, 712,5cl, 712,5cl, Zusammen 11cl",
+                "5l": "1428cl, 1190cl, 1190cl, 1190cl, Zusammen 11cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Isolde",
+                    "en": "Isolde"
+                },
+                "Ingredients": {
+                    "de": "3cl Aperol, 2cl Lillet, 1,5cl Limoncello, 1,5cl Lavendel Gin, 2cl Kr\u00e4uter Tee Heidi, Zusammen 11cl",
+                    "en": "3Cl Aperol, 2Cl Lillet, 1.5Cl Limoncello, 1.5Cl lavender gin, 2Cl herbal tea Heidi, together 11Cl together"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "300cl, 200cl, 150cl, 150cl, 200cl, Zusammen 11cl",
+                "3L": "900cl, 600cl, 450cl, 450cl, 600cl, Zusammen 11cl",
+                "5l": "1500cl, 1000cl, 750cl, 750cl, 1000cl, Zusammen 11cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Negroni",
+                    "en": "Negroni"
+                },
+                "Ingredients": {
+                    "de": "1,5cl Zitronengras-Gin, 2cl Campari, 2cl Gin, 2,5cl Roter Wermut, 2,5cl Earl Grey Tee, Zusammen 10,5cl",
+                    "en": "1.5Cl lemon grass gin, 2Cl Campari, 2Cl Gin, 2.5Cl red wermination, 2.5Cl Earl Gray tea, together 10.5Cl"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "142,5cl, 190cl, 190cl, 237,5cl, 237,5cl, Zusammen 10,5cl",
+                "3L": "427,5cl, 570cl, 570cl, 712,5cl, 712,5cl, Zusammen 10,5cl",
+                "5l": "714cl, 952cl, 952cl, 1190cl, 1190cl, Zusammen 10,5cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Bramble",
+                    "en": "Bramble"
+                },
+                "Ingredients": {
+                    "de": "2cl Lavendel Gin, 3cl Gin, 3,5cl Himbeeren Cordial, 1cl Tonka Vodka, Zusammen 9,5cl, 0,5cl Acid",
+                    "en": "2Cl lavender gin, 3Cl gin, 3.5cl raspberries cordial, 1cl Tonka Vodka, together 9.5Cl, 0.5cl acid"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "210cl, 315cl, 376,5cl, 105cl, Zusammen 9,5cl, 0,5cl Acid",
+                "3L": "630cl, 945cl, 1102,5cl, 315cl, Zusammen 9,5cl, 0,5cl Acid",
+                "5l": "1052cl, 1578cl, 1841cl, 526cl, Zusammen 9,5cl, 0,5cl Acid",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Whiskey Sour",
+                    "en": "Whiskey Sour"
+                },
+                "Ingredients": {
+                    "de": "5,5cl Bourbon, 1,25cl Zitronensherbet, 1,25cl Orangensherbet, Zusammen 8cl",
+                    "en": "5.5 cl Bourbon, 1.25cl lemon Sherbet, 1.25cl orangen Sherbet, together 8Cl"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "687,5cl, 156,25cl, 156,25cl, Zusammen 8cl",
+                "3L": "2062,5cl, 468,75cl, 468,75cl, Zusammen 8cl",
+                "5l": "3437,5cl, 937,5cl, 937,5cl, Zusammen 8cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Gin Basil Smash",
+                    "en": "Gin Basil Smash"
+                },
+                "Ingredients": {
+                    "de": "1cl Zitrone Sherbet, 1cl Orange Sherbet, 1cl Kardamom Vodka, 0,5cl Ingwer Vodka, 4cl Gin, 0,1cl Liebst\u00f6ckel Vodka, Zusammen 7,5cl, 2cl Acid",
+                    "en": "1Cl Zitron Sherbet, 1Cl Orange Sherbet, 1Cl Kardamom Vodka, 0.5Cl Ingwer Vodka, 4Cl Gin, 0.1Cl Liebst\u00f6ckel Vodka, Together 7.5Cl, 2CL ACID"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "131cl, 131cl, 131cl, 65,5cl, 524cl, 13,1cl, Zusammen 7,5cl, 2cl Acid",
+                "3L": "394cl, 394cl, 394cl, 197cl, 1576cl, 39,4cl, Zusammen 7,5cl, 2cl Acid",
+                "5l": "657cl, 657cl, 657cl, 328,5cl, 2628cl, 65,7cl, Zusammen 7,5cl, 2cl Acid",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Riwa Spritz",
+                    "en": "Riwa spray"
+                },
+                "Ingredients": {
+                    "de": "3cl Rhabarber Nektar, 3cl Rose Vermouth, 1cl Tonka Vodka, 1cl St. Germain, Zusammen 8cl",
+                    "en": "3Cl rhubarb nectar, 3Cl rose Vermouth, 1Cl Tonka Vodka, 1Cl St. Germain, together 8Cl"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "375cl, 375cl, 125cl, 125cl, Zusammen 8cl",
+                "3L": "1125cl, 1125cl, 375cl, 375cl, Zusammen 8cl",
+                "5l": "1875cl, 1875cl, 625cl, 625cl, Zusammen 8cl",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Oriental Highball",
+                    "en": "Oriental highball"
+                },
+                "Ingredients": {
+                    "de": "3,5cl Whiskey, 1,5cl Kardamom-Vodka, 2cl Lime-Sherbet, 2cl Kurkumawasser, 2cl Schw. Kardamomsirup, Zusammen 11cl, Ginger Beer",
+                    "en": "3.5Cl Whiskey, 1.5C Cardamom vodka, 2Cl Lime-Sherbet, 2Cl turmeric water, 2Cl Schw. Cardamom syrup, together 11Cl, Ginger Beer"
+                },
+                "Instructions": {
+                    "de": "",
+                    "en": ""
+                },
+                "Glass": {
+                    "de": "",
+                    "en": ""
+                },
+                "Garnish": {
+                    "de": "",
+                    "en": ""
+                },
+                "1L": "315cl, 135cl, 180cl, 180cl, 180cl, Zusammen 11cl, Ginger Beer",
+                "3L": "952cl, 408cl, 544cl, 544cl, 544cl, Zusammen 11cl, Ginger Beer",
+                "5l": "1589cl, 681cl, 908cl, 908cl, 908cl, Zusammen 11cl, Ginger Beer",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Tristan",
+                    "en": "Tristan"
+                },
+                "Ingredients": {
+                    "de": "3cl Birnenbrand, 2,5cl Campari, 2,5cl Roter Wermut, 2,5cl Grapefruitwasser",
+                    "en": "3Cl pear brandy, 2.5Cl Campari, 2.5cl red wormwood, 2.5CL grapefruit water"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen und Schmelzwasser abgie\u00dfen. Prebatch 11cl ins Glas, R\u00fchren und ausgarnieren",
+                    "en": "Drain the glass and melt water.Prebatch 11Cl into the glass, stir and remove it"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Orangenzeste",
+                    "en": "Orange zest"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Isolde",
+                    "en": "Isolde"
+                },
+                "Ingredients": {
+                    "de": "2,5cl Aperol, 2,5cl Lillet blanc, 3cl Wermut Dry, 1cl Kardamom-Vodka, 2,5cl Grapefruitwasser",
+                    "en": "2.5Cl Aperol, 2.5Cl Lillet Blanc, 3CL WERMUNG DRY, 1CL Cardamom vodka, 2.5CL grapefruit water"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen und Schmelzwasser abgie\u00dfen. Prebatch 11cl ins Glas, R\u00fchren und ausgarnieren",
+                    "en": "Drain the glass and melt water.Prebatch 11Cl into the glass, stir and remove it"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Zitronenzeste",
+                    "en": "Lemon"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Negroni",
+                    "en": "Negroni"
+                },
+                "Ingredients": {
+                    "de": "1,5cl Zitronengras-Gin, 2cl Campari, 2cl Tanqueray Gin, 2,5cl Roter Wermut, 2,5cl Earl Grey Tee",
+                    "en": "1.5Cl lemon grass gin, 2Cl Campari, 2Cl Tanqueray Gin, 2.5Cl Red Wermin, 2.5Cl Earl Gray Tea"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen und Schmelzwasser abgie\u00dfen. Prebatch 11cl ins Glas, R\u00fchren und ausgarnieren",
+                    "en": "Drain the glass and melt water.Prebatch 11Cl into the glass, stir and remove it"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Orangenzeste",
+                    "en": "Orange zest"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Old Faschionde",
+                    "en": "Old fashioned"
+                },
+                "Ingredients": {
+                    "de": "1,5cl Zucker Sirup, 5,5cl Markers Mark, 2 Spritze Angostura",
+                    "en": "1.5Cl sugar syrup, 5.5cl Makers Mark, 2 syringe Angostura"
+                },
+                "Instructions": {
+                    "de": "Mix Glas K\u00fchlen mit Eis. Restwasser aussch\u00fctten. Dann 1,5cl Zucker Sirup und 5,5cl Markers Mark. R\u00fchren und in Whiskey Glas auf Eis servieren. Als Deko 2 Spritze Angostura",
+                    "en": "Mix glass cool with ice.Release the residual water.Then 1.5cl sugar syrup and 5.5Cl markers mark.Stir and serve on ice in whiskey glass.As decoration 2 syringe Angostura"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Orange Zeste",
+                    "en": "Orange zest"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Brumble",
+                    "en": "Bumper"
+                },
+                "Ingredients": {
+                    "de": "2cl Lavendel Gin, 3cl Gin, 3cl Himbeeren Cordial, 1cl Tonka Vodka, Zusammen 9,5cl, 0,5cl Acid",
+                    "en": "2Cl lavender gin, 3Cl gin, 3Cl raspberries cordial, 1cl Tonka Vodka, together 9.5Cl, 0.5cl acid"
+                },
+                "Instructions": {
+                    "de": "Prebatch 9,5cl + 0,5cl Acid ins Glas, mit Crushed Ice auff\u00fcllen und gut umr\u00fchren, noch etwas Crushed Ice und ausgarnieren",
+                    "en": "Prebatch 9.5Cl + 0.5CL acid in the glass, fill in with crushed ice and stir well, still a little crushed ice and outline"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Himbeere + Minze",
+                    "en": "Raspberry + mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Caipirinha",
+                    "en": "Caipirinha"
+                },
+                "Ingredients": {
+                    "de": "4,5cl Cachaca, 6 Stk. Limetten, 2BL Wei\u00dfer Rohrzucker, 2cl Limesherbet",
+                    "en": "4.5Cl CACHACA, 6 pcs. Limettes, 2Bl white cane sugar, 2Cl Limesherbet"
+                },
+                "Instructions": {
+                    "de": "Limette und Zucker muddeln, Cachaca zugeben, mit crushed Eis f\u00fcllen, gut umr\u00fchren, ausgarnieren",
+                    "en": "Muddling the lime and sugar, adding cachaca, filling with crushed ice, stirring well, removing it"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "2 Limetten Scheiben",
+                    "en": "2 lime slices"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Passion-Caipi",
+                    "en": "Passion Caipi"
+                },
+                "Ingredients": {
+                    "de": "4-5 Limetten Scheiben, 2cl Zucker, Passion Frucht, 5cl Cachaca, 2cl Maracuja Cordial",
+                    "en": "4-5 lime slices, 2Cl sugar, passion fruit, 5Cl cachaca, 2cl maracuja cordial"
+                },
+                "Instructions": {
+                    "de": "Alle Zutaten geben wir in der Glass und r\u00fchren wir es um. Danach f\u00fcllen wir es mit crushed Eis und r\u00fchren wir es noch mal um und garnieren",
+                    "en": "We give all ingredients in the glass and stir it.Then we fill it with crushed ice and we stir it over and garnish it again"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Passion Frucht Schalle, Blaubeeren und Minze",
+                    "en": "Passion fruit bowl, blueberries and mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Mojito",
+                    "en": "Mojito"
+                },
+                "Ingredients": {
+                    "de": "4,5cl Rum, 1/2 Limette, 8 Bl. Minze, 2cl Zucker, 2cl Lime Sherbet, 2cl Acid Mix, Kleiner Schuss Soda",
+                    "en": "4.5Cl rum, 1/2 lime, 8 sheets of mint, 2Cl sugar, 2cl Lime Sherbet, 2Cl acid mix, small shot soda"
+                },
+                "Instructions": {
+                    "de": "Limette und Zucker muddeln. Alle Zutaten ins Glas geben, mit crushed auff\u00fcllen, gut umr\u00fchren, nochmal crushed nachgeben. Mit Soda auff\u00fcllen und gut umr\u00fchren",
+                    "en": "Muddling the lime and sugar.Put all the ingredients in the glass, fill in with crushed, stir well, add crushed again.Fill with soda and stir well"
+                },
+                "Glass": {
+                    "de": "Longdrink",
+                    "en": "Long drink"
+                },
+                "Garnish": {
+                    "de": "Trockene Minze, Limette",
+                    "en": "Dry mint, lime"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Vibrante/Floreale Spritz (alkoholfrei)",
+                    "en": "Vibrante/Floreal spray (alcohol -free)"
+                },
+                "Ingredients": {
+                    "de": "5cl Martini Floreale/Vibrante, 6-8 Eisw\u00fcrfeln, Tonic",
+                    "en": "5Cl martini floreal/vibrante, 6-8 ice cubes, tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Trockene Kumquats, Thymian",
+                    "en": "Dry kumquats, thyme"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Riwa Spritz",
+                    "en": "Riwa spray"
+                },
+                "Ingredients": {
+                    "de": "8cl Riwa Spritz Prebatch, 6-8 Eisw\u00fcrfeln, Tonic",
+                    "en": "8cl Riwa Spritz Prebatch, 6-8 ice cubes, tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Erdbeeren, Minze",
+                    "en": "Strawberries, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Brazil Spritz (Wochen Spritz)",
+                    "en": "Brazil Spritz (weeks spray)"
+                },
+                "Ingredients": {
+                    "de": "6cl Prebatch, 6-8 Eisw\u00fcrfeln, Tonic",
+                    "en": "6cl Prebatch, 6-8 ice cubes, tonic"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Trockene Limette, Minze",
+                    "en": "Dry lime, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Allg\u00e4uer Spritz",
+                    "en": "Allg\u00e4u spray"
+                },
+                "Ingredients": {
+                    "de": "4cl Schlehen Gin, 2/3 Prosecco, 1/3 Soda",
+                    "en": "4Cl Schlehen Gin, 2/3 Prosecco, 1/3 Soda"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfeln, Zutaten ins Glas geben, leicht r\u00fchren",
+                    "en": "Put ice cubes, add the ingredients in the glass, stir slightly"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Beeren, Gurke, Minze",
+                    "en": "Berries, cucumber, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Tatra-Tea Hibiskus Spritz",
+                    "en": "Tatra-Tea hibiscus spray"
+                },
+                "Ingredients": {
+                    "de": "Not specified",
+                    "en": "Not specified"
+                },
+                "Instructions": {
+                    "de": "Not specified",
+                    "en": "Not specified"
+                },
+                "Glass": {
+                    "de": "Spritz Glas",
+                    "en": "Spray glass"
+                },
+                "Garnish": {
+                    "de": "Not specified",
+                    "en": "Not specified"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Moscow Mule",
+                    "en": "Moscow Mule"
+                },
+                "Ingredients": {
+                    "de": "4cl Vodka, 2cl Limettensaft, Ginger Beer",
+                    "en": "4Cl vodka, 2Cl lime juice, ginger beer"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfel, alle Zutaten in den Becher geben, mit Ginger Beer auff\u00fcllen & leicht r\u00fchren",
+                    "en": "Ice cubes, add all the ingredients to the cup, fill in with ginger beer & stir slightly"
+                },
+                "Glass": {
+                    "de": "Becher",
+                    "en": "Mug"
+                },
+                "Garnish": {
+                    "de": "Gurke-Ingwer-Limette",
+                    "en": "Cucumber-Ingwer Limette"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Munich Mule",
+                    "en": "Munich Mule"
+                },
+                "Ingredients": {
+                    "de": "4cl Gin, 2cl Limettensaft, Ginger Beer",
+                    "en": "4Cl gin, 2Cl lime juice, ginger beer"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfel, alle Zutaten in den Becher geben, mit Ginger Beer auff\u00fcllen & leicht r\u00fchren",
+                    "en": "Ice cubes, add all the ingredients to the cup, fill in with ginger beer & stir slightly"
+                },
+                "Glass": {
+                    "de": "Becher",
+                    "en": "Mug"
+                },
+                "Garnish": {
+                    "de": "Gurke-Ingwer-Limette, Minze",
+                    "en": "Cucumber-Ingwer-Limette, mint"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Caribbean Mule",
+                    "en": "Caribbean Mule"
+                },
+                "Ingredients": {
+                    "de": "4cl Ananas P\u00fcree, 1cl Koriander Vodka, 4cl Vodka, 1,5cl Acid, Ginger Beer",
+                    "en": "4Cl Ananas Puree, 1Cl Koriander Vodka, 4Cl Vodka, 1.5Cl Acid, Ginger Beer"
+                },
+                "Instructions": {
+                    "de": "Eisw\u00fcrfel, alle Zutaten in den Becher geben, mit Ginger Beer auff\u00fcllen & leicht r\u00fchren",
+                    "en": "Ice cubes, add all the ingredients to the cup, fill in with ginger beer & stir slightly"
+                },
+                "Glass": {
+                    "de": "Becher",
+                    "en": "Mug"
+                },
+                "Garnish": {
+                    "de": "Trockene Ananas und Ananas Blatt",
+                    "en": "Dry pineapple and pineapple leaf"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Cuba Libre",
+                    "en": "Cuba Libre"
+                },
+                "Ingredients": {
+                    "de": "5cl Rum, 3 Stk. Limetten, Cola",
+                    "en": "5Cl rum, 3 pcs. Limettes, cola"
+                },
+                "Instructions": {
+                    "de": "Limette muddeln, Rum zugeben, mit Eis f\u00fcllen, mit Cola auff\u00fcllen, umr\u00fchren, ausgarnieren",
+                    "en": "Muddling the lime, adding around, filling with ice cream, filling with cola, stirring, removing it"
+                },
+                "Glass": {
+                    "de": "Longdrink",
+                    "en": "Long drink"
+                },
+                "Garnish": {
+                    "de": "Limette",
+                    "en": "Lime"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Whiskey Sour",
+                    "en": "Whiskey Sour"
+                },
+                "Ingredients": {
+                    "de": "5,5cl Bourbon, 1,25cl Zitronensherbet, 1,25cl Orangensherbet, 2cl Zitronensaft",
+                    "en": "5.5Cl bourbon, 1.25 cl lemons Sherbet, 1.25cl Orangen Sherbet, 2Cl lemon juice"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen, Prebatch 8cl + 2cl Zitronensaft mixen",
+                    "en": "Cooling glass, mixing the Prebatch + 2Cl lemon juice"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Orange Zeste",
+                    "en": "Orange zest"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Aperol Sour",
+                    "en": "Aperol Sour"
+                },
+                "Ingredients": {
+                    "de": "5,5cl Sour Mix, 5cl Aperol, 2cl Acid, 4cl Bourbon",
+                    "en": "5.5Cl SOUR MIX, 5CL Aperol, 2Cl ACID, 4CL Bourbon"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen, Prebatch 5,5cl + 4cl Aperol, 2cl Acid und 2cl Bourbon mit Crushed-Eis in den Tin und mixen",
+                    "en": "Cooling glass, Prebatch 5.5Cl + 4Cl Aperol, 2Cl ACID and 2CL Bourbon with crushed ice cream in the Tin and Mixen"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Trockene Orange",
+                    "en": "Dry orange"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Limoncello Sour",
+                    "en": "Limoncello Sour"
+                },
+                "Ingredients": {
+                    "de": "5,5cl Sour Mix, 5cl Limoncello, 2cl Acid",
+                    "en": "5.5Cl SOUR MIX, 5CL LMONCELLO, 2CL ACID"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen, Prebatch 5,5cl + 5cl Limoncello, 2cl Acid und mit Crushed-Eis in den Tin und mixen",
+                    "en": "Cooling glass, Prebatch 5.5Cl + 5Cl lemoncello, 2Cl acid and with crushed ice cream in the tin and mix"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Trockene Zitrone",
+                    "en": "Dry lemon"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Riwa-Blue Sour",
+                    "en": "Riwa-Blue Sour"
+                },
+                "Ingredients": {
+                    "de": "5,5cl Sour Mix, 4cl Lavabelle, 2cl Gin, 3cl Acid",
+                    "en": "5.5Cl SOUR MIX, 4CL LAVABELLE, 2CL GIN, 3CL ACID"
+                },
+                "Instructions": {
+                    "de": "Glas k\u00fchlen, Prebatch 5,5cl + 4cl Lavabelle, 2cl Gin, 3cl Acid und mit Crushed-Eis in den Tin und mixen",
+                    "en": "Cooling glass, Prebatch 5.5Cl + 4Cl lavabelle, 2Cl gin, 3Cl acid and with crushed ice cream in the tin and mix"
+                },
+                "Glass": {
+                    "de": "Tumbler",
+                    "en": "Tumbler"
+                },
+                "Garnish": {
+                    "de": "Trockene Limette und Trockene Lavendel",
+                    "en": "Dry lime and dry lavender"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Riwa-Colada",
+                    "en": "Riwa-Colada"
+                },
+                "Ingredients": {
+                    "de": "1cl Orange Sherbet, 2cl Kokos P\u00fcree, 4cl Ananas P\u00fcree, 4cl Dunkel Rum, 0,75cl Caffe Vodka",
+                    "en": "1Cl orange Sherbet, 2Cl coconut puree, 4cl Ananas Puree, 4Cl dark rum, 0.75cl Caffe Vodka"
+                },
+                "Instructions": {
+                    "de": "Prebatch 12cl + 1cl Acid und mit und mit Crushed-Eis in den Tin und mixen",
+                    "en": "Prebatch 12Cl + 1Cl acid and with and with crushed ice cream in the tin and mix"
+                },
+                "Glass": {
+                    "de": "Longdrink",
+                    "en": "Long drink"
+                },
+                "Garnish": {
+                    "de": "Caff\u00e8-Rand und Ananas Blatt",
+                    "en": "Caff\u00e8 edge and pineapple leaf"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Pinacolada",
+                    "en": "Pinacolada"
+                },
+                "Ingredients": {
+                    "de": "1cl Orange Sherbet, 2cl Kokos P\u00fcree, 4cl Ananas P\u00fcree, 4cl Dunkel Rum",
+                    "en": "1Cl orange Sherbet, 2Cl coconut puree, 4cl Ananas Puree, 4cl dark rum"
+                },
+                "Instructions": {
+                    "de": "Prebatch 11cl + 1cl Acid und mit Crushed-Eis in den Tin und mixen",
+                    "en": "Prebatch 11Cl + 1Cl acid and with crushed ice cream in the Tin and mix"
+                },
+                "Glass": {
+                    "de": "Longdrink",
+                    "en": "Long drink"
+                },
+                "Garnish": {
+                    "de": "Trockene Ananas und Ananas Blatt",
+                    "en": "Dry pineapple and pineapple leaf"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            },
+            {
+                "Mix Name": {
+                    "de": "Long Island Iced Tea",
+                    "en": "Long Island Iced Tea"
+                },
+                "Ingredients": {
+                    "de": "1,5cl Vodka, 1,5cl Tequila, 1,5cl Rum, 1,5cl Gin, 1,5cl Cointreau, 1,5cl Lime Sherbet",
+                    "en": "1.5Cl vodka, 1.5cl Tequila, 1.5Cl rum, 1.5cl gin, 1.5Cl CoinTreau, 1.5Cl Lime Sherbet"
+                },
+                "Instructions": {
+                    "de": "Prebatch 11cl + 1cl Acid und mit Crushed-Eis in den Tin und mixen",
+                    "en": "Prebatch 11Cl + 1Cl acid and with crushed ice cream in the Tin and mix"
+                },
+                "Glass": {
+                    "de": "Longdrink",
+                    "en": "Long drink"
+                },
+                "Garnish": {
+                    "de": "Scheibe frische Orange und Limette",
+                    "en": "Disc fresh orange and lime"
+                },
+                "1L": "",
+                "3L": "",
+                "5l": "",
+                "10l": "",
+                "15l": ""
+            }
+        ];
+
+        var selectedLanguage = 'de'; // Default language
+        var langButtons = document.querySelectorAll('#language-buttons button');
+
+        // Function to display recipes
+        function displayRecipes(recipesToDisplay) {
+            var recipesDiv = document.getElementById('recipes');
+            recipesDiv.innerHTML = '';
+
+            recipesToDisplay.forEach(function(recipe) {
+                var recipeDiv = document.createElement('div');
+                recipeDiv.className = 'recipe';
+
+                var name = document.createElement('h2');
+                name.textContent = recipe['Mix Name'][selectedLanguage] || 'Unnamed Recipe';
+                recipeDiv.appendChild(name);
+
+                if (recipe['Ingredients'] && recipe['Ingredients'][selectedLanguage]) {
+                    var ingredients = document.createElement('p');
+                    ingredients.innerHTML = '<strong>Ingredients:</strong> ' + recipe['Ingredients'][selectedLanguage];
+                    recipeDiv.appendChild(ingredients);
+                }
+
+                if (recipe['Instructions'] && recipe['Instructions'][selectedLanguage]) {
+                    var instructions = document.createElement('p');
+                    instructions.innerHTML = '<strong>Instructions:</strong> ' + recipe['Instructions'][selectedLanguage];
+                    recipeDiv.appendChild(instructions);
+                }
+
+                if (recipe['Glass'] && recipe['Glass'][selectedLanguage]) {
+                    var glass = document.createElement('p');
+                    glass.innerHTML = '<strong>Glass:</strong> ' + recipe['Glass'][selectedLanguage];
+                    recipeDiv.appendChild(glass);
+                }
+
+                if (recipe['Garnish'] && recipe['Garnish'][selectedLanguage]) {
+                    var garnish = document.createElement('p');
+                    garnish.innerHTML = '<strong>Garnish:</strong> ' + recipe['Garnish'][selectedLanguage];
+                    recipeDiv.appendChild(garnish);
+                }
+
+                recipesDiv.appendChild(recipeDiv);
+            });
+        }
+
+        // Function to update displayed recipes based on search query and language
+        function updateDisplayedRecipes() {
+            var query = searchField.value.toLowerCase();
+
+            var filteredRecipes = recipes.filter(function(recipe) {
+                return recipe['Mix Name'][selectedLanguage].toLowerCase().includes(query);
+            });
+
+            displayRecipes(filteredRecipes);
+        }
+
+        // Initial display of all recipes
+        displayRecipes(recipes);
+
+        // Add event listener to search field
+        var searchField = document.getElementById('search');
+        searchField.addEventListener('input', updateDisplayedRecipes);
+
+        // Add event listeners to language buttons
+        langButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                selectedLanguage = this.id === 'lang-de' ? 'de' : 'en';
+                // Update button styles
+                langButtons.forEach(function(btn) {
+                    btn.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                updateDisplayedRecipes();
+            });
+        });
+
+        // Set default selected button
+        document.getElementById('lang-de').classList.add('selected');
+    </script>
+</body>
+</html>
