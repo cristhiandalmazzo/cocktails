@@ -5,29 +5,57 @@
     <title>Cocktail Recipes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* CSS Variables */
+        :root {
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --button-background: #eeeeee;
+            --button-text-color: #333333;
+            --button-hover-background: #dddddd;
+            --selected-button-background: #007BFF;
+            --selected-button-text-color: #ffffff;
+        }
+
+        .dark-theme {
+            --background-color: #121212;
+            --text-color: #ffffff;
+            --border-color: #444444;
+            --button-background: #333333;
+            --button-text-color: #ffffff;
+            --button-hover-background: #444444;
+            --selected-button-background: #007BFF;
+            --selected-button-text-color: #ffffff;
+        }
+
         /* Base Styles */
         body {
+            background-color: var(--background-color);
+            color: var(--text-color);
             font-family: Arial, sans-serif;
             margin: 5%;
-            font-size: 18px; /* Increased font size */
+            font-size: 18px;
             line-height: 1.6;
-            color: #333;
         }
 
         #search {
             width: 100%;
             padding: 12px;
-            font-size: 18px; /* Increased font size */
+            font-size: 18px;
             margin-bottom: 20px;
             box-sizing: border-box;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
         }
 
         .recipe {
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             padding: 20px;
             margin-bottom: 25px;
-            background-color: #fff;
+            background-color: var(--background-color);
+            color: var(--text-color);
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
@@ -35,59 +63,72 @@
 
         .recipe h2 {
             margin-top: 0;
-            font-size: 22px; /* Slightly larger heading */
+            font-size: 22px;
         }
 
         .recipe p {
             margin: 10px 0;
-            font-size: 18px; /* Match body font size */
-            word-wrap: break-word;       /* Ensure lines break within words */
+            font-size: 18px;
+            word-wrap: break-word;
             overflow-wrap: break-word;
         }
 
-        #language-buttons {
+        .recipe ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+
+        .recipe strong {
+            display: block;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        #language-buttons, #theme-toggle {
             margin-bottom: 20px;
         }
 
-        #language-buttons button {
+        #language-buttons button, #toggle-theme {
             margin-right: 10px;
             padding: 12px 20px;
-            font-size: 18px; /* Increased font size */
+            font-size: 18px;
             min-width: 48px;
             min-height: 48px;
             border: none;
             border-radius: 5px;
-            background-color: #eee;
+            background-color: var(--button-background);
+            color: var(--button-text-color);
             cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        #language-buttons button:hover {
-            background-color: #ddd;
+        #language-buttons button:hover, #toggle-theme:hover {
+            background-color: var(--button-hover-background);
         }
 
         #language-buttons button.selected {
-            background-color: #007BFF;
-            color: white;
+            background-color: var(--selected-button-background);
+            color: var(--selected-button-text-color);
         }
 
         /* Responsive adjustments */
         @media only screen and (max-width: 600px) {
             body {
                 margin: 2%;
-                font-size: 20px; /* Increase font size on small screens */
+                font-size: 20px;
             }
             #search {
                 font-size: 20px;
                 padding: 10px;
             }
             .recipe h2 {
-                font-size: 24px; /* Larger heading on mobile */
+                font-size: 24px;
             }
             .recipe p {
                 font-size: 20px;
             }
-            #language-buttons button {
+            #language-buttons button, #toggle-theme {
                 font-size: 20px;
                 padding: 10px 15px;
             }
@@ -99,9 +140,11 @@
         <button id="lang-de">Deutsch</button>
         <button id="lang-en">English</button>
     </div>
+    <div id="theme-toggle">
+        <button id="toggle-theme">Dark Mode</button>
+    </div>
     <input type="text" id="search" placeholder="Search for a cocktail recipe...">
     <div id="recipes"></div>
-
     <script>
         // JSON data with multilingual support
         var recipes = [
@@ -1865,46 +1908,115 @@
         var selectedLanguage = 'de'; // Default language
         var langButtons = document.querySelectorAll('#language-buttons button');
 
+        // Theme switching logic
+        var toggleThemeButton = document.getElementById('toggle-theme');
+
+        // Function to switch themes
+        function switchTheme() {
+            if (document.body.classList.contains('dark-theme')) {
+                document.body.classList.remove('dark-theme');
+                toggleThemeButton.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.add('dark-theme');
+                toggleThemeButton.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Event listener for theme toggle button
+        toggleThemeButton.addEventListener('click', switchTheme);
+
+        // Load saved theme preference
+        function loadThemePreference() {
+            var theme = localStorage.getItem('theme');
+            if (theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    toggleThemeButton.textContent = 'Light Mode';
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    toggleThemeButton.textContent = 'Dark Mode';
+                }
+            } else {
+                // Detect system preference
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-theme');
+                    toggleThemeButton.textContent = 'Light Mode';
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    toggleThemeButton.textContent = 'Dark Mode';
+                }
+            }
+        }
+
+
+        // Load theme preference first
+        loadThemePreference();
+
+        // Set default selected language button
+        document.getElementById('lang-de').classList.add('selected');
+
+        // Initial display of recipes
+        displayRecipes(recipes);
+
         // Function to display recipes
         function displayRecipes(recipesToDisplay) {
-            var recipesDiv = document.getElementById('recipes');
-            recipesDiv.innerHTML = '';
+        var recipesDiv = document.getElementById('recipes');
+        recipesDiv.innerHTML = '';
 
-            recipesToDisplay.forEach(function(recipe) {
-                var recipeDiv = document.createElement('div');
-                recipeDiv.className = 'recipe';
+        recipesToDisplay.forEach(function(recipe) {
+            var recipeDiv = document.createElement('div');
+            recipeDiv.className = 'recipe';
 
-                var name = document.createElement('h2');
-                name.textContent = recipe['Mix Name'][selectedLanguage] || 'Unnamed Recipe';
-                recipeDiv.appendChild(name);
+            var name = document.createElement('h2');
+            name.textContent = recipe['Mix Name'][selectedLanguage] || 'Unnamed Recipe';
+            recipeDiv.appendChild(name);
 
-                if (recipe['Ingredients'] && recipe['Ingredients'][selectedLanguage]) {
-                    var ingredients = document.createElement('p');
-                    ingredients.innerHTML = '<strong>Ingredients:</strong> ' + recipe['Ingredients'][selectedLanguage];
-                    recipeDiv.appendChild(ingredients);
-                }
+            // Ingredients
+            if (recipe['Ingredients'] && recipe['Ingredients'][selectedLanguage]) {
+                var ingredientsDiv = document.createElement('div');
+                
+                var ingredientsHeader = document.createElement('strong');
+                ingredientsHeader.textContent = 'Ingredients:';
+                ingredientsDiv.appendChild(ingredientsHeader);
+                
+                var ingredientsList = document.createElement('ul');
+                var ingredientsArray = recipe['Ingredients'][selectedLanguage].split(',');
+                ingredientsArray.forEach(function(ingredient) {
+                    var li = document.createElement('li');
+                    li.textContent = ingredient.trim();
+                    ingredientsList.appendChild(li);
+                });
+                ingredientsDiv.appendChild(ingredientsList);
+                recipeDiv.appendChild(ingredientsDiv);
+            }
 
-                if (recipe['Instructions'] && recipe['Instructions'][selectedLanguage]) {
-                    var instructions = document.createElement('p');
-                    instructions.innerHTML = '<strong>Instructions:</strong> ' + recipe['Instructions'][selectedLanguage];
-                    recipeDiv.appendChild(instructions);
-                }
+            // Instructions
+            if (recipe['Instructions'] && recipe['Instructions'][selectedLanguage]) {
+                var instructions = document.createElement('p');
+                instructions.innerHTML = '<strong>Instructions:</strong> ' + recipe['Instructions'][selectedLanguage];
+                recipeDiv.appendChild(instructions);
+            }
 
-                if (recipe['Glass'] && recipe['Glass'][selectedLanguage]) {
-                    var glass = document.createElement('p');
-                    glass.innerHTML = '<strong>Glass:</strong> ' + recipe['Glass'][selectedLanguage];
-                    recipeDiv.appendChild(glass);
-                }
+            // Glass
+            if (recipe['Glass'] && recipe['Glass'][selectedLanguage]) {
+                var glass = document.createElement('p');
+                glass.innerHTML = '<strong>Glass:</strong> ' + recipe['Glass'][selectedLanguage];
+                recipeDiv.appendChild(glass);
+            }
 
-                if (recipe['Garnish'] && recipe['Garnish'][selectedLanguage]) {
-                    var garnish = document.createElement('p');
-                    garnish.innerHTML = '<strong>Garnish:</strong> ' + recipe['Garnish'][selectedLanguage];
-                    recipeDiv.appendChild(garnish);
-                }
+            // Garnish
+            if (recipe['Garnish'] && recipe['Garnish'][selectedLanguage]) {
+                var garnish = document.createElement('p');
+                garnish.innerHTML = '<strong>Garnish:</strong> ' + recipe['Garnish'][selectedLanguage];
+                recipeDiv.appendChild(garnish);
+            }
 
-                recipesDiv.appendChild(recipeDiv);
-            });
-        }
+            recipesDiv.appendChild(recipeDiv);
+        });
+    }   
+
 
         // Function to update displayed recipes based on search query and language
         function updateDisplayedRecipes() {
